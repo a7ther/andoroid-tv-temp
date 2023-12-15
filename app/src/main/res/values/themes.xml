@@ -1,4 +1,4 @@
 <resources>
 
-    <style name="Theme.Androidtvtemp" parent="@style/Theme.Leanback" />
+    <style name="Theme.Androidtvtemp" parent="@style/Theme.SplashScreen" />
 </resources>
