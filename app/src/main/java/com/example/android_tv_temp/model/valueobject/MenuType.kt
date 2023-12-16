@@ -1,4 +1,4 @@
-package com.example.android_tv_temp.model
+package com.example.android_tv_temp.model.valueobject
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AcUnit

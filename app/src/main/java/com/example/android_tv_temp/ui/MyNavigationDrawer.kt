@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,13 +36,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.tv.foundation.PivotOffsets
+import androidx.tv.foundation.lazy.list.TvLazyRow
+import androidx.tv.foundation.lazy.list.itemsIndexed
 import androidx.tv.material3.Card
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
-import com.example.android_tv_temp.model.MenuType
+import com.example.android_tv_temp.model.data.MyCardData
+import com.example.android_tv_temp.model.valueobject.MenuType
+import com.example.android_tv_temp.ui.component.MyCard
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -96,14 +102,24 @@ private fun MyContent(
         startDestination = startScreenName,
     ) {
         composable(MenuType.Menu1.label) {
-            Card(
-                onClick = { },
+            TvLazyRow(
+                modifier = Modifier,
+                pivotOffsets = PivotOffsets(parentFraction = 0.07f),
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Text(
-                    text = MenuType.Menu1.label,
-                    modifier = Modifier.padding(10.dp),
-                )
+                itemsIndexed(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)) { index, item ->
+                    MyCard(
+                        MyCardData(
+                            title = "title!! $index : $item",
+                            description = "description!!",
+                            imageUrl = "https://1.bp.blogspot.com/-grR0-27HeAk/Xo-8A7L5NXI/AAAAAAABYOc/S25Dd_VUJv4iEQfjem3b-gbvYZZu6tACACNcBGAsYHQ/s1600/bg_sakura_night.jpg",
+                            onClickContent = {},
+                        )
+                    )
+                }
             }
+
         }
         composable(MenuType.Menu2.label) {
             Card(
