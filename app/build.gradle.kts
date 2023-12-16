@@ -83,6 +83,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
     kapt(libs.hilt.compiler)
 
     // Baseline profile installer

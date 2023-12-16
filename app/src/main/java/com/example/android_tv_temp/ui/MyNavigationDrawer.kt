@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -74,6 +76,12 @@ fun MyNavigationDrawer() {
             }
         }
     }
+}
+
+@Preview(device = Devices.TV_720p)
+@Composable
+fun MyNavigationDrawerPreview() {
+    MyNavigationDrawer()
 }
 
 @OptIn(ExperimentalTvMaterial3Api::class)
