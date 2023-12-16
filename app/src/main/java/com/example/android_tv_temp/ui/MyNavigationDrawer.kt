@@ -22,12 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -136,6 +136,7 @@ private fun Sidebar(
     menuTypeList: List<MenuType>,
 ) {
     val selectedIndex = remember { mutableIntStateOf(0) }
+    val focusRequesters = remember { List(size = menuTypeList.size) { FocusRequester() } }
 
     LaunchedEffect(selectedIndex.intValue) {
         selectedMenuType.value = menuTypeList[selectedIndex.intValue]
@@ -155,10 +156,13 @@ private fun Sidebar(
                 iconImageVector = menuType.icon,
                 text = menuType.label,
                 drawerValue = drawerValue,
-                focusedIndex = selectedIndex,
-                index = index
+                selectedIndex = selectedIndex,
+                focusRequesters = focusRequesters,
+                index = index,
+                modifier = Modifier.focusRequester(focusRequesters[index]),
             )
         }
+
     }
 }
 
@@ -168,28 +172,26 @@ private fun NavigationItem(
     iconImageVector: ImageVector,
     text: String,
     drawerValue: DrawerValue,
-    focusedIndex: MutableState<Int>,
+    selectedIndex: MutableState<Int>,
+    focusRequesters: List<FocusRequester>,
     index: Int,
     modifier: Modifier = Modifier,
 ) {
-    val isFocused = remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .onFocusChanged {
-                isFocused.value = it.isFocused
-                if (it.isFocused) {
-                    focusedIndex.value = index
+                if (it.isFocused.not()) return@onFocusChanged
+                when (drawerValue) {
+                    DrawerValue.Open -> selectedIndex.value = index
+                    DrawerValue.Closed -> focusRequesters[selectedIndex.value].requestFocus()
                 }
             }
-            .background(if (isFocused.value) Color.White else Color.Transparent)
-            .semantics(mergeDescendants = true) {
-                selected = focusedIndex.value == index
-            }
+            .background(if (selectedIndex.value == index) Color.Black else Color.Transparent)
             .clickable {
-                focusedIndex.value = index
+                selectedIndex.value = index
                 focusManager.moveFocus(FocusDirection.Right)
             }
     ) {
@@ -200,7 +202,7 @@ private fun NavigationItem(
             ) {
                 Icon(
                     imageVector = iconImageVector,
-                    tint = if (isFocused.value) Color.Gray else Color.White,
+                    tint = Color.White,
                     contentDescription = null,
                 )
                 AnimatedVisibility(visible = drawerValue == DrawerValue.Open) {
@@ -208,7 +210,7 @@ private fun NavigationItem(
                         text = text,
                         modifier = Modifier,
                         softWrap = false,
-                        color = if (isFocused.value) Color.Gray else Color.White,
+                        color = Color.White,
                     )
                 }
             }
