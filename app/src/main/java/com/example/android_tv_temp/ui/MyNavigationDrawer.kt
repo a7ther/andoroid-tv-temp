@@ -15,17 +15,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -164,23 +164,25 @@ private fun NavigationItem(
     index: Int,
     modifier: Modifier = Modifier,
 ) {
-    var isFocused by remember { mutableStateOf(false) }
+    val isFocused = remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10.dp))
             .onFocusChanged {
-                isFocused = it.isFocused
+                isFocused.value = it.isFocused
                 if (it.isFocused) {
                     focusedIndex.value = index
                 }
             }
-            .background(if (isFocused) Color.White else Color.Transparent)
+            .background(if (isFocused.value) Color.White else Color.Transparent)
             .semantics(mergeDescendants = true) {
                 selected = focusedIndex.value == index
             }
             .clickable {
                 focusedIndex.value = index
+                focusManager.moveFocus(FocusDirection.Right)
             }
     ) {
         Box(modifier = Modifier.padding(10.dp)) {
@@ -190,7 +192,7 @@ private fun NavigationItem(
             ) {
                 Icon(
                     imageVector = iconImageVector,
-                    tint = if (isFocused) Color.Gray else Color.White,
+                    tint = if (isFocused.value) Color.Gray else Color.White,
                     contentDescription = null,
                 )
                 AnimatedVisibility(visible = drawerValue == DrawerValue.Open) {
@@ -198,7 +200,7 @@ private fun NavigationItem(
                         text = text,
                         modifier = Modifier,
                         softWrap = false,
-                        color = if (isFocused) Color.Gray else Color.White,
+                        color = if (isFocused.value) Color.Gray else Color.White,
                     )
                 }
             }
