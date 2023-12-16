@@ -102,24 +102,7 @@ private fun MyContent(
         startDestination = startScreenName,
     ) {
         composable(MenuType.Menu1.label) {
-            TvLazyRow(
-                modifier = Modifier,
-                pivotOffsets = PivotOffsets(parentFraction = 0.07f),
-                contentPadding = PaddingValues(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                itemsIndexed(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)) { index, item ->
-                    MyCard(
-                        MyCardData(
-                            title = "title!! $index : $item",
-                            description = "description!!",
-                            imageUrl = "https://1.bp.blogspot.com/-grR0-27HeAk/Xo-8A7L5NXI/AAAAAAABYOc/S25Dd_VUJv4iEQfjem3b-gbvYZZu6tACACNcBGAsYHQ/s1600/bg_sakura_night.jpg",
-                            onClickContent = {},
-                        )
-                    )
-                }
-            }
-
+            Menu1ScreenPreview()
         }
         composable(MenuType.Menu2.label) {
             Card(
