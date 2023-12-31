@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,25 +28,14 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.tv.foundation.PivotOffsets
-import androidx.tv.foundation.lazy.list.TvLazyRow
-import androidx.tv.foundation.lazy.list.itemsIndexed
-import androidx.tv.material3.Card
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
-import com.example.android_tv_temp.model.data.MyCardData
 import com.example.android_tv_temp.model.valueobject.MenuType
-import com.example.android_tv_temp.ui.component.MyCard
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -61,7 +49,7 @@ fun MyNavigationDrawer() {
     val navController = rememberNavController()
 
     LaunchedEffect(selectedMenuType.value) {
-        navController.navigate(selectedMenuType.value.label)
+        navController.navigate(selectedMenuType.value.route)
     }
 
     Row(Modifier.fillMaxSize()) {
@@ -75,52 +63,9 @@ fun MyNavigationDrawer() {
                     )
                 }
             ) {
-                MyContent(
+                MyRouter(
                     navController = navController,
-                    startScreenName = menuTypeList.first().label,
-                )
-            }
-        }
-    }
-}
-
-@Preview(device = Devices.TV_720p)
-@Composable
-fun MyNavigationDrawerPreview() {
-    MyNavigationDrawer()
-}
-
-@OptIn(ExperimentalTvMaterial3Api::class)
-@Composable
-private fun MyContent(
-    navController: NavHostController,
-    startScreenName: String,
-) {
-    NavHost(
-        modifier = Modifier,
-        navController = navController,
-        startDestination = startScreenName,
-    ) {
-        composable(MenuType.Menu1.label) {
-            Menu1ScreenPreview()
-        }
-        composable(MenuType.Menu2.label) {
-            Card(
-                onClick = { },
-            ) {
-                Text(
-                    text = MenuType.Menu2.label,
-                    modifier = Modifier.padding(20.dp),
-                )
-            }
-        }
-        composable(MenuType.Menu3.label) {
-            Card(
-                onClick = { },
-            ) {
-                Text(
-                    text = MenuType.Menu3.label,
-                    modifier = Modifier.padding(30.dp),
+                    startScreenName = menuTypeList.first().route,
                 )
             }
         }

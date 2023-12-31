@@ -1,12 +1,15 @@
-package com.example.android_tv_temp.ui
+package com.example.android_tv_temp.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.tv.foundation.PivotOffsets
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyRow
@@ -14,13 +17,20 @@ import androidx.tv.foundation.lazy.list.itemsIndexed
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import com.example.android_tv_temp.model.data.Menu1ScreenData
-import com.example.android_tv_temp.model.data.MyCardData
+import com.example.android_tv_temp.model.data.Menu1ScreenUiState
+import com.example.android_tv_temp.model.valueobject.ScreenType
+import com.example.android_tv_temp.network.dto.NetworkProgressState
+import com.example.android_tv_temp.network.dto.VideoCarouselResponseDto
+import com.example.android_tv_temp.network.dto.VideoItemResponseDto
+import com.example.android_tv_temp.network.dto.VideoListResponseDto
 import com.example.android_tv_temp.ui.component.MyCard
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun Menu1Screen(data: Menu1ScreenData) {
+fun Menu1Screen(
+    navController: NavHostController,
+    uiState: Menu1ScreenUiState,
+) {
 
     TvLazyColumn(
         modifier = Modifier,
@@ -28,7 +38,7 @@ fun Menu1Screen(data: Menu1ScreenData) {
         contentPadding = PaddingValues(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        itemsIndexed(data.carousels) { carouselIndex, carousel ->
+        itemsIndexed(uiState.carousels) { carouselIndex, carousel ->
             Text(
                 text = carousel.carouselTitle,
                 style = MaterialTheme.typography.labelLarge,
@@ -43,7 +53,12 @@ fun Menu1Screen(data: Menu1ScreenData) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 itemsIndexed(carousel.cards) { cardIndex, card ->
-                    MyCard(data = card)
+                    MyCard(
+                        data = card,
+                        onClick = {
+                            navController.navigate(ScreenType.VideoScreen.createTransitionRoute(card.videoId))
+                        }
+                    )
                 }
             }
         }
@@ -51,7 +66,7 @@ fun Menu1Screen(data: Menu1ScreenData) {
 
 }
 
-@Preview
+@Preview(device = Devices.TV_720p)
 @Composable
 fun Menu1ScreenPreview() {
     val imageUrls = listOf(
@@ -60,20 +75,28 @@ fun Menu1ScreenPreview() {
         "https://1.bp.blogspot.com/-Pn5YVYCP5y8/XwkxXzeCAUI/AAAAAAABZ_U/_kp36Irf-mMCObO5wDP7Vwh5b8pvVDH2QCNcBGAsYHQ/s1600/bg_school_koutei.jpg",
     )
 
-    val data = Menu1ScreenData(
-        carousels = List(size = 9) { index ->
-            Menu1ScreenData.Carousel(
-                carouselTitle = "Carousel $index",
-                cards = List(size = 9) { cardIndex ->
-                    MyCardData(
-                        title = "Card $index - $cardIndex",
-                        description = "Description",
-                        imageUrl = imageUrls.random(),
-                        onClickContent = {},
+    val videoListResponseDto = VideoListResponseDto(
+        List(size = 9) { index ->
+            VideoCarouselResponseDto(
+                title = "Carousel $index",
+                itemList = List(size = 6) { itemIndex ->
+                    VideoItemResponseDto(
+                        videoId = "videoId $index - $itemIndex",
+                        title = "Title $index - $itemIndex",
+                        description = "Description $index - $itemIndex",
+                        thumbnailUrl = imageUrls.random(),
                     )
                 }
             )
         }
     )
-    Menu1Screen(data = data)
+
+    val uiState = Menu1ScreenUiState(
+        networkProgressState = NetworkProgressState.Success(videoListResponseDto),
+    )
+
+    Menu1Screen(
+        navController = rememberNavController(),
+        uiState = uiState,
+    )
 }

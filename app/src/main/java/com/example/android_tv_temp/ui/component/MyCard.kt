@@ -35,7 +35,10 @@ import com.example.android_tv_temp.model.data.MyCardData
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun MyCard(data: MyCardData) {
+fun MyCard(
+    data: MyCardData,
+    onClick: () -> Unit,
+) {
     Column(modifier = Modifier) {
         var isFocused by remember { mutableStateOf(false) }
         Card(
@@ -54,7 +57,7 @@ fun MyCard(data: MyCardData) {
             colors = CardDefaults.colors(
                 containerColor = Color.Transparent,
             ),
-            onClick = data.onClickContent,
+            onClick = onClick,
         ) {
             AsyncImage(
                 model = data.imageUrl,
@@ -109,11 +112,12 @@ fun MyCard(data: MyCardData) {
 @Composable
 fun MyCardPreview() {
     MyCard(
-        MyCardData(
+        data = MyCardData(
+            videoId = "videoId",
             title = "title !!",
             description = "description !!",
             imageUrl = "https://xxx.com.png",
-            onClickContent = {},
-        )
+        ),
+        onClick = {},
     )
 }
