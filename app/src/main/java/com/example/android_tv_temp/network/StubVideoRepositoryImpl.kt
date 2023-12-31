@@ -1,0 +1,40 @@
+package com.example.android_tv_temp.network
+
+import com.example.android_tv_temp.network.dto.VideoCarouselResponseDto
+import com.example.android_tv_temp.network.dto.VideoDetailResponseDto
+import com.example.android_tv_temp.network.dto.VideoItemResponseDto
+import com.example.android_tv_temp.network.dto.VideoListResponseDto
+import kotlinx.coroutines.delay
+
+class StubVideoRepositoryImpl : VideoRepository {
+
+    private val imageUrls = listOf(
+        "https://1.bp.blogspot.com/-grR0-27HeAk/Xo-8A7L5NXI/AAAAAAABYOc/S25Dd_VUJv4iEQfjem3b-gbvYZZu6tACACNcBGAsYHQ/s1600/bg_sakura_night.jpg",
+        "https://1.bp.blogspot.com/-bthkpH7aumM/XwkxYLCim9I/AAAAAAABZ_Y/PAuyA3NYApI6IA6Uqdw2NWyrJV2MUXW-QCNcBGAsYHQ/s1600/bg_school_taiikukan.jpg",
+        "https://1.bp.blogspot.com/-Pn5YVYCP5y8/XwkxXzeCAUI/AAAAAAABZ_U/_kp36Irf-mMCObO5wDP7Vwh5b8pvVDH2QCNcBGAsYHQ/s1600/bg_school_koutei.jpg",
+    )
+
+    override suspend fun fetchVideoList(): VideoListResponseDto {
+        // 通信を想定したdelay
+        delay(3_000L)
+        return VideoListResponseDto(
+            List(size = 9) { index ->
+                VideoCarouselResponseDto(
+                    title = "Carousel $index",
+                    itemList = List(size = 6) { itemIndex ->
+                        VideoItemResponseDto(
+                            videoId = "videoId $index - $itemIndex",
+                            title = "Title $index - $itemIndex",
+                            description = "Description $index - $itemIndex",
+                            thumbnailUrl = imageUrls.random(),
+                        )
+                    }
+                )
+            }
+        )
+    }
+
+    override suspend fun fetchVideoDetail(): VideoDetailResponseDto {
+        TODO("Not yet implemented")
+    }
+}
