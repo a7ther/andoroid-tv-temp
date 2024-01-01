@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -38,14 +41,23 @@ import com.example.android_tv_temp.model.data.MyCardData
 fun MyCard(
     data: MyCardData,
     onClick: () -> Unit,
+    focusedVideoId: MutableState<String?>,
+    focusRequester: FocusRequester,
 ) {
     Column(modifier = Modifier) {
-        var isFocused by remember { mutableStateOf(false) }
+        var isFocused by rememberSaveable { mutableStateOf(false) }
+
         Card(
             modifier = Modifier
                 .width(300.dp)
                 .wrapContentSize()
-                .onFocusChanged { isFocused = it.isFocused || it.hasFocus },
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    if (it.isFocused || it.hasFocus) {
+                        isFocused = true
+                        focusedVideoId.value = data.videoId
+                    }
+                },
             scale = CardDefaults.scale(focusedScale = 1.0f),
             border = CardDefaults.border(
                 focusedBorder = Border(
@@ -119,5 +131,7 @@ fun Preview_MyCard() {
             imageUrl = "https://xxx.com.png",
         ),
         onClick = {},
+        focusedVideoId = mutableStateOf(null),
+        focusRequester = FocusRequester(),
     )
 }

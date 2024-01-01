@@ -3,7 +3,12 @@ package com.example.android_tv_temp.ui.screen.menu1
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,13 +37,16 @@ fun Menu1Screen(
     uiState: Menu1ScreenUiState,
 ) {
 
+    val focusedVideoId = rememberSaveable { mutableStateOf<String?>(null) }
+    val focusRequesterMap = remember { mutableMapOf<String, FocusRequester>() }
+
     TvLazyColumn(
         modifier = Modifier,
         pivotOffsets = PivotOffsets(parentFraction = 0.08f),
         contentPadding = PaddingValues(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        itemsIndexed(uiState.carousels) { carouselIndex, carousel ->
+        itemsIndexed(uiState.carousels) { _, carousel ->
             Text(
                 text = carousel.carouselTitle,
                 style = MaterialTheme.typography.labelLarge,
@@ -52,16 +60,24 @@ fun Menu1Screen(
                 contentPadding = PaddingValues(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                itemsIndexed(carousel.cards) { cardIndex, card ->
+                itemsIndexed(carousel.cards) { _, card ->
+                    val focusRequester = remember { FocusRequester() }
+                    focusRequesterMap[card.videoId] = focusRequester
                     MyCard(
                         data = card,
                         onClick = {
                             navController.navigate(ScreenType.VideoPlayerScreen.createTransitionRoute(card.videoId))
-                        }
+                        },
+                        focusedVideoId = focusedVideoId,
+                        focusRequester = focusRequester,
                     )
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequesterMap[focusedVideoId.value]?.requestFocus()
     }
 
 }
