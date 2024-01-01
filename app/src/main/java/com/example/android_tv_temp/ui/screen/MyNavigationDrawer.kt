@@ -18,6 +18,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,8 +38,10 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
 import com.example.android_tv_temp.model.valueobject.MenuType
+import com.example.android_tv_temp.ui.component.Preview_MyCard
 import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1ViewModel
+import com.example.android_tv_temp.ui.screen.menu1.Preview_Menu1Screen
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -46,7 +49,7 @@ fun MyNavigationDrawer(
     navController: NavHostController,
     menu1ViewModel: Menu1ViewModel = hiltViewModel(),
 ) {
-    val selectedMenuType: MutableState<MenuType> = remember { mutableStateOf(MenuType.MENU1) }
+    val selectedMenuType: MutableState<MenuType> = rememberSaveable { mutableStateOf(MenuType.MENU1) }
     val menuTypeList = MenuType.entries
 
     Row(Modifier.fillMaxSize()) {
@@ -61,9 +64,9 @@ fun MyNavigationDrawer(
                 }
             ) {
                 when (selectedMenuType.value) {
-                    MenuType.MENU1 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                    MenuType.MENU1 -> Preview_MyCard()
                     MenuType.MENU2 -> Menu1Screen(navController, menu1ViewModel.uiState)
-                    MenuType.MENU3 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                    MenuType.MENU3 -> Preview_Menu1Screen()
                 }
             }
         }
@@ -77,8 +80,12 @@ private fun Sidebar(
     selectedMenuType: MutableState<MenuType>,
     menuTypeList: List<MenuType>,
 ) {
-    val selectedIndex = remember { mutableIntStateOf(0) }
-    val focusRequesters = remember { List(size = menuTypeList.size) { FocusRequester() } }
+    val selectedIndex = rememberSaveable { mutableIntStateOf(0) }
+    val focusRequesters = remember {
+        List(size = menuTypeList.size) {
+            FocusRequester()
+        }
+    }
 
     LaunchedEffect(selectedIndex.intValue) {
         selectedMenuType.value = menuTypeList[selectedIndex.intValue]
