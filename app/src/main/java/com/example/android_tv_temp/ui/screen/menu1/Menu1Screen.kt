@@ -68,7 +68,7 @@ fun Menu1Screen(
 
 @Preview(device = Devices.TV_720p)
 @Composable
-fun Menu1ScreenPreview() {
+fun Preview_Menu1Screen() {
     val imageUrls = listOf(
         "https://1.bp.blogspot.com/-grR0-27HeAk/Xo-8A7L5NXI/AAAAAAABYOc/S25Dd_VUJv4iEQfjem3b-gbvYZZu6tACACNcBGAsYHQ/s1600/bg_sakura_night.jpg",
         "https://1.bp.blogspot.com/-bthkpH7aumM/XwkxYLCim9I/AAAAAAABZ_Y/PAuyA3NYApI6IA6Uqdw2NWyrJV2MUXW-QCNcBGAsYHQ/s1600/bg_school_taiikukan.jpg",

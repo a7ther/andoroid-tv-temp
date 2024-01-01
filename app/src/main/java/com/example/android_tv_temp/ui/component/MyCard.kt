@@ -110,7 +110,7 @@ fun MyCard(
 
 @Preview
 @Composable
-fun MyCardPreview() {
+fun Preview_MyCard() {
     MyCard(
         data = MyCardData(
             videoId = "videoId",
