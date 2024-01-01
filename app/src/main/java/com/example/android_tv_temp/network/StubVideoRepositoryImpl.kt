@@ -16,12 +16,12 @@ class StubVideoRepositoryImpl : VideoRepository {
 
     override suspend fun fetchVideoList(): VideoListResponseDto {
         // 通信を想定したdelay
-        delay(3_000L)
+        delay(1_000L)
         return VideoListResponseDto(
-            List(size = 9) { index ->
+            List(size = (1..5).random()) { index ->
                 VideoCarouselResponseDto(
                     title = "Carousel $index",
-                    itemList = List(size = 6) { itemIndex ->
+                    itemList = List(size = (3..8).random()) { itemIndex ->
                         VideoItemResponseDto(
                             videoId = "videoId $index - $itemIndex",
                             title = "Title $index - $itemIndex",

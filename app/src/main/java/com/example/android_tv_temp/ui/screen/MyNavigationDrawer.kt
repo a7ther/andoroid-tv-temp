@@ -38,16 +38,20 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
 import com.example.android_tv_temp.model.valueobject.MenuType
-import com.example.android_tv_temp.ui.component.Preview_MyCard
 import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1ViewModel
-import com.example.android_tv_temp.ui.screen.menu1.Preview_Menu1Screen
+import com.example.android_tv_temp.ui.screen.menu2.Menu2Screen
+import com.example.android_tv_temp.ui.screen.menu2.Menu2ViewModel
+import com.example.android_tv_temp.ui.screen.menu3.Menu3Screen
+import com.example.android_tv_temp.ui.screen.menu3.Menu3ViewModel
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun MyNavigationDrawer(
     navController: NavHostController,
     menu1ViewModel: Menu1ViewModel = hiltViewModel(),
+    menu2ViewModel: Menu2ViewModel = hiltViewModel(),
+    menu3ViewModel: Menu3ViewModel = hiltViewModel(),
 ) {
     val selectedMenuType: MutableState<MenuType> = rememberSaveable { mutableStateOf(MenuType.MENU1) }
     val menuTypeList = MenuType.entries
@@ -64,9 +68,9 @@ fun MyNavigationDrawer(
                 }
             ) {
                 when (selectedMenuType.value) {
-                    MenuType.MENU1 -> Preview_MyCard()
-                    MenuType.MENU2 -> Menu1Screen(navController, menu1ViewModel.uiState)
-                    MenuType.MENU3 -> Preview_Menu1Screen()
+                    MenuType.MENU1 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                    MenuType.MENU2 -> Menu2Screen(navController, menu2ViewModel.uiState)
+                    MenuType.MENU3 -> Menu3Screen(navController, menu3ViewModel.uiState)
                 }
             }
         }
