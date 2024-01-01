@@ -10,6 +10,7 @@ import com.example.android_tv_temp.model.valueobject.ScreenType
 import com.example.android_tv_temp.ui.screen.MainScreen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1ViewModel
+import com.example.android_tv_temp.ui.screen.videoplayer.VideoPlayerScreen
 
 @Composable
 fun MyRouter(
@@ -39,16 +40,7 @@ fun MyRouter(
             arguments = ScreenType.VideoPlayerScreen.arguments,
         ) {
             val videoId = it.arguments?.getString(ScreenType.VideoPlayerScreen.keyVideoId) ?: return@composable
-//            Card(
-//                onClick = { },
-//                modifier = Modifier.fillMaxSize(),
-//            ) {
-//                Text(
-//                    text = "videoId : $videoId",
-//                    modifier = Modifier.padding(20.dp),
-//                )
-//            }
-//            VideoPlayerScreen()
+            VideoPlayerScreen()
         }
     }
 }
