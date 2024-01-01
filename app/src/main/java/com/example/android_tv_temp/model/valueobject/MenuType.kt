@@ -7,27 +7,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.android_tv_temp.model.data.NavRouter
 
-sealed interface MenuType : NavRouter {
+enum class MenuType(val icon: ImageVector, val label: String) : NavRouter {
 
-    val icon: ImageVector
-    val label: String
+    MENU1(Icons.Default.Adb, "Menu1"),
+    MENU2(Icons.Default.Add, "Menu2"),
+    MENU3(Icons.Default.AcUnit, "Menu3"),
+    ;
 
-    data object Menu1 : MenuType {
-
-        override val icon: ImageVector = Icons.Default.Adb
-        override val label: String = route
-    }
-
-    data object Menu2 : MenuType {
-
-        override val icon: ImageVector = Icons.Default.Add
-        override val label: String = route
-    }
-
-    data object Menu3 : MenuType {
-
-        override val icon: ImageVector = Icons.Default.AcUnit
-        override val label: String = route
-    }
-
+    override val route: String = name
 }

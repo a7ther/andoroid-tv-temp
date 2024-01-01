@@ -1,4 +1,4 @@
-package com.example.android_tv_temp.ui
+package com.example.android_tv_temp.ui.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -29,28 +29,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
 import com.example.android_tv_temp.model.valueobject.MenuType
+import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
+import com.example.android_tv_temp.ui.screen.menu1.Menu1ViewModel
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun MyNavigationDrawer() {
-    val selectedMenuType: MutableState<MenuType> = remember { mutableStateOf(MenuType.Menu1) }
-    val menuTypeList = listOf(
-        MenuType.Menu1,
-        MenuType.Menu2,
-        MenuType.Menu3,
-    )
-    val navController = rememberNavController()
-
-    LaunchedEffect(selectedMenuType.value) {
-        navController.navigate(selectedMenuType.value.route)
-    }
+fun MyNavigationDrawer(
+    navController: NavHostController,
+    menu1ViewModel: Menu1ViewModel = hiltViewModel(),
+) {
+    val selectedMenuType: MutableState<MenuType> = remember { mutableStateOf(MenuType.MENU1) }
+    val menuTypeList = MenuType.entries
 
     Row(Modifier.fillMaxSize()) {
         Box(modifier = Modifier) {
@@ -63,10 +60,11 @@ fun MyNavigationDrawer() {
                     )
                 }
             ) {
-                MyRouter(
-                    navController = navController,
-                    startScreenName = menuTypeList.first().route,
-                )
+                when (selectedMenuType.value) {
+                    MenuType.MENU1 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                    MenuType.MENU2 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                    MenuType.MENU3 -> Menu1Screen(navController, menu1ViewModel.uiState)
+                }
             }
         }
     }

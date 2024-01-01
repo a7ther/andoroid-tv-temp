@@ -1,4 +1,4 @@
-package com.example.android_tv_temp.ui.screen
+package com.example.android_tv_temp.ui.screen.menu1
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

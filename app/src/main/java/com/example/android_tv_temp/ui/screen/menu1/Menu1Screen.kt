@@ -1,4 +1,4 @@
-package com.example.android_tv_temp.ui.screen
+package com.example.android_tv_temp.ui.screen.menu1
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -56,7 +56,7 @@ fun Menu1Screen(
                     MyCard(
                         data = card,
                         onClick = {
-                            navController.navigate(ScreenType.VideoScreen.createTransitionRoute(card.videoId))
+                            navController.navigate(ScreenType.VideoPlayerScreen.createTransitionRoute(card.videoId))
                         }
                     )
                 }

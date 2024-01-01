@@ -5,7 +5,9 @@ import androidx.navigation.navArgument
 import com.example.android_tv_temp.model.data.NavRouter
 
 sealed interface ScreenType : NavRouter {
-    data object VideoScreen : ScreenType {
+
+    data object MainScreen : ScreenType
+    data object VideoPlayerScreen : ScreenType {
 
         const val keyVideoId = "videoId"
         override val route: String = "${super.route}/{$keyVideoId}"
