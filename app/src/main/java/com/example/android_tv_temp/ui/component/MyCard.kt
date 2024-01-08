@@ -56,6 +56,8 @@ fun MyCard(
                     if (it.isFocused || it.hasFocus) {
                         isFocused = true
                         focusedVideoId.value = data.videoId
+                    }else{
+                        isFocused = false
                     }
                 },
             scale = CardDefaults.scale(focusedScale = 1.0f),
