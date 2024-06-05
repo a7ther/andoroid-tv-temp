@@ -1,8 +1,5 @@
 package com.example.android_tv_temp.ui.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -21,13 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +28,9 @@ import androidx.navigation.NavHostController
 import androidx.tv.material3.DrawerValue
 import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
+import androidx.tv.material3.NavigationDrawerItem
+import androidx.tv.material3.NavigationDrawerItemDefaults
+import androidx.tv.material3.NavigationDrawerScope
 import androidx.tv.material3.Text
 import com.example.android_tv_temp.model.valueobject.MenuType
 import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
@@ -58,7 +54,7 @@ fun MyNavigationDrawer(
         Box(modifier = Modifier) {
             NavigationDrawer(
                 drawerContent = { drawerValue ->
-                    Sidebar(
+                    NavigationDrawerItems(
                         drawerValue = drawerValue,
                         selectedMenuType = selectedMenuType,
                         menuTypeList = menuTypeList,
@@ -76,7 +72,7 @@ fun MyNavigationDrawer(
 }
 
 @Composable
-private fun Sidebar(
+private fun NavigationDrawerScope.NavigationDrawerItems(
     drawerValue: DrawerValue,
     selectedMenuType: MutableState<MenuType>,
     menuTypeList: List<MenuType>,
@@ -87,6 +83,7 @@ private fun Sidebar(
             FocusRequester()
         }
     }
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(selectedIndex.intValue) {
         selectedMenuType.value = menuTypeList[selectedIndex.intValue]
@@ -95,7 +92,6 @@ private fun Sidebar(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .background(Color.Transparent)
             .onFocusChanged {
                 if (it.isFocused.not()) return@onFocusChanged
                 if (drawerValue != DrawerValue.Closed) return@onFocusChanged
@@ -107,65 +103,35 @@ private fun Sidebar(
     ) {
 
         menuTypeList.forEachIndexed { index, menuType ->
-            NavigationItem(
-                iconImageVector = menuType.icon,
-                text = menuType.label,
-                drawerValue = drawerValue,
-                selectedIndex = selectedIndex,
-                focusRequesters = focusRequesters,
-                index = index,
-                modifier = Modifier.focusRequester(focusRequesters[index]),
-            )
-        }
-
-    }
-}
-
-@Composable
-private fun NavigationItem(
-    iconImageVector: ImageVector,
-    text: String,
-    drawerValue: DrawerValue,
-    selectedIndex: MutableState<Int>,
-    focusRequesters: List<FocusRequester>,
-    index: Int,
-    modifier: Modifier = Modifier,
-) {
-    val focusManager = LocalFocusManager.current
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
-            .onFocusChanged {
-                if (it.isFocused.not()) return@onFocusChanged
-                if (drawerValue != DrawerValue.Open) return@onFocusChanged
-                selectedIndex.value = index
-            }
-            .background(if (selectedIndex.value == index) Color.Black else Color.Transparent)
-            .clickable {
-                selectedIndex.value = index
-                focusManager.moveFocus(FocusDirection.Right)
-            }
-    ) {
-        Box(modifier = Modifier.padding(10.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
-            ) {
-                Icon(
-                    imageVector = iconImageVector,
-                    tint = Color.White,
-                    contentDescription = null,
-                )
-                AnimatedVisibility(visible = drawerValue == DrawerValue.Open) {
-                    Text(
-                        text = text,
-                        modifier = Modifier,
-                        softWrap = false,
-                        color = Color.White,
+            NavigationDrawerItem(
+                modifier = Modifier
+                    .focusRequester(focusRequesters[index])
+                    .onFocusChanged {
+                        if (it.isFocused.not()) return@onFocusChanged
+                        if (drawerValue != DrawerValue.Open) return@onFocusChanged
+                        selectedIndex.intValue = index
+                    },
+                colors = NavigationDrawerItemDefaults.colors(
+                    contentColor = Color.LightGray,
+                    inactiveContentColor = Color.LightGray,
+                    focusedContainerColor = Color.White,
+                    selectedContainerColor = Color.White,
+                ),
+                selected = selectedIndex.intValue == index,
+                onClick = {
+                    selectedIndex.intValue = index
+                    focusManager.moveFocus(FocusDirection.Right)
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = menuType.icon,
+                        contentDescription = null,
                     )
-                }
+                },
+            ) {
+                Text(menuType.label)
             }
         }
+
     }
 }
