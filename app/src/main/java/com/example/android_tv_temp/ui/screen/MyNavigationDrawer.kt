@@ -3,6 +3,7 @@ package com.example.android_tv_temp.ui.screen
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.tv.material3.DrawerValue
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.NavigationDrawer
 import androidx.tv.material3.Text
@@ -45,7 +44,6 @@ import com.example.android_tv_temp.ui.screen.menu2.Menu2ViewModel
 import com.example.android_tv_temp.ui.screen.menu3.Menu3Screen
 import com.example.android_tv_temp.ui.screen.menu3.Menu3ViewModel
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun MyNavigationDrawer(
     navController: NavHostController,
@@ -77,7 +75,6 @@ fun MyNavigationDrawer(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun Sidebar(
     drawerValue: DrawerValue,
@@ -99,7 +96,12 @@ private fun Sidebar(
         modifier = Modifier
             .fillMaxHeight()
             .background(Color.Transparent)
-            .selectableGroup(),
+            .onFocusChanged {
+                if (it.isFocused.not()) return@onFocusChanged
+                if (drawerValue != DrawerValue.Closed) return@onFocusChanged
+                focusRequesters[selectedIndex.intValue].requestFocus()
+            }
+            .focusable(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -119,7 +121,6 @@ private fun Sidebar(
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun NavigationItem(
     iconImageVector: ImageVector,
@@ -137,10 +138,8 @@ private fun NavigationItem(
             .clip(RoundedCornerShape(10.dp))
             .onFocusChanged {
                 if (it.isFocused.not()) return@onFocusChanged
-                when (drawerValue) {
-                    DrawerValue.Open -> selectedIndex.value = index
-                    DrawerValue.Closed -> focusRequesters[selectedIndex.value].requestFocus()
-                }
+                if (drawerValue != DrawerValue.Open) return@onFocusChanged
+                selectedIndex.value = index
             }
             .background(if (selectedIndex.value == index) Color.Black else Color.Transparent)
             .clickable {
