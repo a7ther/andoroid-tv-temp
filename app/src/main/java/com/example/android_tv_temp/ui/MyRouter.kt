@@ -10,13 +10,19 @@ import com.example.android_tv_temp.model.valueobject.ScreenType
 import com.example.android_tv_temp.ui.screen.MainScreen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1Screen
 import com.example.android_tv_temp.ui.screen.menu1.Menu1ViewModel
+import com.example.android_tv_temp.ui.screen.menu2.Menu2Screen
+import com.example.android_tv_temp.ui.screen.menu2.Menu2ViewModel
+import com.example.android_tv_temp.ui.screen.menu3.Menu3Screen
+import com.example.android_tv_temp.ui.screen.menu3.Menu3ViewModel
 import com.example.android_tv_temp.ui.screen.videoplayer.VideoPlayerScreen
 
 @Composable
 fun MyRouter(
     navController: NavHostController,
     startScreenName: String,
-    menu1ViewModel: Menu1ViewModel = hiltViewModel()
+    menu1ViewModel: Menu1ViewModel = hiltViewModel(),
+    menu2ViewModel: Menu2ViewModel = hiltViewModel(),
+    menu3ViewModel: Menu3ViewModel = hiltViewModel()
 ) {
 
     NavHost(
@@ -30,10 +36,10 @@ fun MyRouter(
             Menu1Screen(navController, menu1ViewModel.uiState)
         }
         composable(MenuType.MENU2.route) {
-            Menu1Screen(navController, menu1ViewModel.uiState)
+            Menu2Screen(navController, menu2ViewModel.uiState)
         }
         composable(MenuType.MENU3.route) {
-            Menu1Screen(navController, menu1ViewModel.uiState)
+            Menu3Screen(navController, menu3ViewModel.uiState)
         }
         composable(
             route = ScreenType.VideoPlayerScreen.route,
