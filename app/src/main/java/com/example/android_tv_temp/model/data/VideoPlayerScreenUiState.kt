@@ -5,22 +5,20 @@ import com.example.android_tv_temp.network.dto.VideoDetailResponseDto
 
 data class VideoPlayerScreenUiState(
     val networkProgressState: NetworkProgressState = NetworkProgressState.Loading,
+    val playerControllerState: PlayerControllerState,
 ) {
 
     val title: String
-        get() = when (networkProgressState) {
-            is NetworkProgressState.Loading -> ""
-            is NetworkProgressState.Success<*> -> {
-                when (val response = networkProgressState.response) {
-                    is VideoDetailResponseDto -> {
-                        response.title
-                    }
+        get() = response?.title ?: ""
 
-                    else -> ""
-                }
+    private val response: VideoDetailResponseDto?
+        get() = when (val state = networkProgressState) {
+            is NetworkProgressState.Loading -> null
+            is NetworkProgressState.Success<*> -> {
+                state.response as VideoDetailResponseDto
             }
 
-            is NetworkProgressState.Error<*> -> ""
+            is NetworkProgressState.Error<*> -> null
         }
 }
 
