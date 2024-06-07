@@ -2,6 +2,8 @@ package com.example.android_tv_temp.ui.screen.menu1
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +21,6 @@ import androidx.tv.foundation.PivotOffsets
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.itemsIndexed
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.android_tv_temp.model.data.Menu1ScreenUiState
@@ -30,7 +31,6 @@ import com.example.android_tv_temp.network.dto.VideoItemResponseDto
 import com.example.android_tv_temp.network.dto.VideoListResponseDto
 import com.example.android_tv_temp.ui.component.MyCard
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun Menu1Screen(
     navController: NavHostController,
@@ -73,6 +73,8 @@ fun Menu1Screen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 

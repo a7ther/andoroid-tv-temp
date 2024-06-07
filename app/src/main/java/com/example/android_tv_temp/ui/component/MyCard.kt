@@ -31,12 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
 import com.example.android_tv_temp.model.data.MyCardData
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun MyCard(
     data: MyCardData,
@@ -49,14 +47,14 @@ fun MyCard(
 
         Card(
             modifier = Modifier
-                .width(300.dp)
+                .width(400.dp)
                 .wrapContentSize()
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     if (it.isFocused || it.hasFocus) {
                         isFocused = true
                         focusedVideoId.value = data.videoId
-                    }else{
+                    } else {
                         isFocused = false
                     }
                 },
