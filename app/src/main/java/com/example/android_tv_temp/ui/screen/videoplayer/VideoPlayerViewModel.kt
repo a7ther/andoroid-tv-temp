@@ -16,11 +16,16 @@ import com.example.android_tv_temp.network.VideoRepository
 import com.example.android_tv_temp.network.dto.NetworkProgressState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -34,7 +39,13 @@ class VideoPlayerViewModel @Inject constructor(
     private val videoRepository: VideoRepository,
 ) : ViewModel() {
 
-    private val isPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _isPlaying: MutableSharedFlow<Boolean> =
+        MutableSharedFlow(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val isPlaying: StateFlow<Boolean> = _isPlaying.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = false
+    )
     private val currentPosition: MutableStateFlow<Long> = MutableStateFlow(0L)
     private val duration: MutableStateFlow<Long> = MutableStateFlow(0L)
 
@@ -45,7 +56,7 @@ class VideoPlayerViewModel @Inject constructor(
         mutableStateOf(
             VideoPlayerScreenUiState(
                 playerControllerState = PlayerControllerState(
-                    isPlaying = isPlaying.asStateFlow(),
+                    isPlaying = isPlaying,
                     currentPosition = currentPosition.asStateFlow(),
                     duration = duration.asStateFlow(),
                     _onClickTogglePlay = ::onClickTogglePlay,
@@ -95,7 +106,7 @@ class VideoPlayerViewModel @Inject constructor(
     }
 
     private fun resetFlowToInitialValue() {
-        isPlaying.value = false
+        _isPlaying.tryEmit(false)
         currentPosition.value = 0L
         duration.value = 0L
         uiState.playerControllerState.resetFlowToInitialValue()
@@ -123,7 +134,7 @@ class VideoPlayerViewModel @Inject constructor(
     private inner class PlayerListener : Player.Listener {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-            this@VideoPlayerViewModel.isPlaying.value = isPlaying
+            _isPlaying.tryEmit(isPlaying)
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
